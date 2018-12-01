@@ -71,10 +71,7 @@ app.get("/new", (req, res) => {
       return iota.sendTrytes(trytes, depth, minWeightMagnitude);
     })
     .then(bundle => {
-      res.send(
-        `Published transaction with tail hash: ${bundle[0].hash}\n` +
-          JSON.stringify(bundle[0])
-      );
+      res.send(bundle[0].hash);
     })
     .catch(err => {
       // catch any errors
