@@ -26,10 +26,9 @@
 
 	<div class="container-fluid">
 		<div class="col-8 offset-2">
-			<form>
+			<form action="#" th:action="@{/product}" th:object="${data}" method="post">
 				<div id="divProductIdEnter" class="form-group">
-					<input type="text" class="form-control" id="productIdEnter"
-						aria-describedby="emailHelp" placeholder="type a product id">
+					<input type="text" class="form-control" th:field="*{productId}" placeholder="enter your product id"/>
 				</div>
 			</form>
 		</div>

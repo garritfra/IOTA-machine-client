@@ -14,7 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Arrays;
@@ -51,9 +53,35 @@ public class ProductController {
 
         return "product";
     }
+    
+    @PostMapping("/product")
+    public String showSteps(@ModelAttribute IndexFormData data, Model model) throws ArgumentException {
+    	IotaAPI api = new IotaAPI.Builder()
+                .protocol("https")
+                .host("testnet140.tangle.works")
+                .port("443")
+                .build();
+//        GetNodeInfoResponse response = api.getNodeInfo();
+        Bundle[] response = api.bundlesFromAddresses(new String[]{data.getProductId()},
+                 true);
+
+        List<Product> fragments = Stream.of(response)
+                .flatMap(b -> b.getTransactions().stream()).map(
+                        t-> parse(toFragment(t), t.getTimestamp())
+                )
+                .sorted((p1, p2) -> Math.toIntExact((p1.getTime() - p2.getTime())))
+                .collect(Collectors.toList());
+
+
+        model.addAttribute("products", fragments);
+        model.addAttribute("id", fragments);
+
+        return "product";
+    }
 
     @RequestMapping("/")
     public String index(Model model) throws ArgumentException {
+    	model.addAttribute("data", new IndexFormData());
         return "index";
     }
 
