@@ -4,11 +4,12 @@
     <title>Spring Boot Thymeleaf Hello World Example</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-    <link rel="stylesheet" type="text/css"
-          href="webjars/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
 
-    <link rel="stylesheet" th:href="@{/css/main.css}"
-          href="../../css/main.css" />
+    <link rel="stylesheet" href="/css/main.css">
 
 </head>
 <body>
@@ -27,12 +28,20 @@
     </div>
 </nav>
 
-<div class="container">
 
-    <div class="starter-template">
+<div class="container-fluid">
+
+    <div class="col-8 offset-2">
         <h1>Spring Boot Web Thymeleaf Example</h1>
         <h2>
-            <span th:text="'Message: ' + ${id}"></span>
+            <!--<span th:text="'Message: ' + ${products}"></span>-->
+            <table class="table table-bordered table-striped">
+                <tr th:each="product: ${products}">
+                    <td th:text="${product.description}" />
+                    <td th:if="${product.success}" ><img class="icon" src="/Icon_CheckMark.svg"/></td>
+                    <td th:if="${!product.success}" ><img class="icon" src="/Icon_Fire.svg"/> </td>
+                </tr>
+            </table>
         </h2>
     </div>
 
