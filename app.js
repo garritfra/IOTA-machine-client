@@ -16,36 +16,17 @@ const iota = composeAPI({
 app.post("/", (req, res) => {
   const address = req.body.address;
   const data = req.body.data;
-  console.log(req.body);
-  res.json(req.body);
-});
 
-app.get("/", (req, res) => {
-  iota
-    .getNodeInfo()
-    .then(info => res.send(info))
-    .catch(err => {
-      res.send(err);
-    });
-});
-
-app.get("/new", (req, res) => {
   // must be truly random & 81-trytes long
 
-  let seed = "9";
-  for (let i = 0; i < 80; i++) {
-    seed += "9";
-  }
+  let seed = makeid();
 
-  const trytes = converter.asciiToTrytes(
-    JSON.stringify({ data: { station: "New Product Created" } })
-  );
+  const trytes = converter.asciiToTrytes(JSON.stringify(req.body.data));
 
   // Array of transfers which defines transfer recipients and value transferred in IOTAs.
   const transfers = [
     {
-      address:
-        "OEQFZPGYVLGUDPUNWZZORRIBS9LAGMHJEWWHLLRKIE9Z9VHHXGBPLCDIKRBMKXCTPJWZ9BEGMJMIKHMD99R9OKBUAY",
+      address: req.body.address,
       value: 0, // 1Ki
       tag: "", // optional tag of `0-27` trytes
       message: trytes // optional message in trytes
@@ -78,7 +59,38 @@ app.get("/new", (req, res) => {
     });
 });
 
+app.get("/", (req, res) => {
+  iota
+    .getNodeInfo()
+    .then(info => res.send(info))
+    .catch(err => {
+      res.send(err);
+    });
+});
+
+app.get("/new", (req, res) => {
+  let seed = makeid();
+  let address = iota.getNewAddress(
+    seed,
+    { index: 0, total: 1, security: 3, checksum: false },
+    function(e, address) {
+      console.log(address);
+      res.send(address);
+    }
+  );
+});
+
 app.listen(8080, err => {
   if (err) console.log(err);
   console.log("Listening on 8080");
 });
+
+function makeid() {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ9";
+
+  for (let i = 0; i < 5; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  return text;
+}
