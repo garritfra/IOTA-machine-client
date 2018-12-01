@@ -45,7 +45,7 @@ public class ProductController {
     
     @RequestMapping("/")
     public String index(Model model) throws ArgumentException {
-        return "product";
+        return "index";
 
     }
 
