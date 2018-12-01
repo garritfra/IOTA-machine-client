@@ -39,6 +39,12 @@ public class ProductController {
 //        String payload = response[0].getTransactions().get(0).getSignatureFragments();
 
         model.addAttribute("id", fragments);
+        return "index";
+
+    }
+    
+    @RequestMapping("/")
+    public String index(Model model) throws ArgumentException {
         return "product";
 
     }
